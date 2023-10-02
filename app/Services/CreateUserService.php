@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\AppError;
 use App\Models\User;
-use Error;
 
 class CreateUserService
 {
@@ -14,15 +14,13 @@ class CreateUserService
 
 
         if (!is_null($userFound)) {
-
-            return response()->json(['message' => 'Email já cadastrado'], 401);
+            throw new AppError('Email já cadastrado', 400);
         }
 
         $userFound = User::firstWhere('cpf', $data['cpf']);
 
         if (!is_null($userFound)) {
-
-            return response()->json(['message' => 'Cpf já cadastrado'], 401);
+            throw new AppError('CPF já cadastrado', 400);
         }
 
         return User::create($data);
