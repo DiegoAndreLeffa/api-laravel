@@ -1,66 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Rota de Criação de Usuário
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Esta rota permite criar um novo usuário com os seguintes campos:
 
-## About Laravel
+- `name` (string, obrigatório): Nome do usuário.
+- `email` (string, obrigatório): Endereço de e-mail do usuário.
+- `password` (string, obrigatório): Senha do usuário (mínimo de 7 caracteres).
+- `type` (enum, obrigatório): Tipo do usuário (SELLER ou COMMON).
+- `balance` (float, padrão 0): Saldo inicial do usuário.
+- `cpf` (string, obrigatório): CPF do usuário.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Exemplo de Requisição:**
+```json
+POST /api/users
+{
+    "name": "Exemplo",
+    "email": "exemplo@mail.com",
+    "password": "1234567",
+    "type": "SELLER",
+    "balance": 0,
+    "cpf": "123456589"
+}
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Possíveis Erros:**
+- `name`: Nome é obrigatório.
+- `cpf`: CPF é obrigatório.
+- `password`: Senha é obrigatória.
+- `password`: A senha deve conter no mínimo 7 caracteres.
+- `email`: Email é obrigatório.
+- `email`: Email deve ser um endereço válido.
+- `type`: Tipo é obrigatório.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Rota de Login
 
-## Learning Laravel
+Esta rota permite que um usuário faça login fornecendo seu email e senha.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- `email` (string, obrigatório): Endereço de e-mail do usuário.
+- `password` (string, obrigatório): Senha do usuário.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Exemplo de Requisição:**
+```json
+POST /api/auth/login
+{
+    "email": "exemplo@mail.com",
+    "password": "1234567"
+}
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Possíveis Erros:**
+- `email`: Email é obrigatório.
+- `password`: Senha é obrigatória.
 
-## Laravel Sponsors
+## Rota de Depósito
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Esta rota permite que um usuário faça um depósito em sua conta, especificando o valor a ser depositado.
 
-### Premium Partners
+- `value` (float, obrigatório): Valor a ser depositado.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+**Exemplo de Requisição:**
+```json
+POST /api/users/id/deposits
+{
+    "value": 15000
+}
+```
+**Possíveis Erros:**
+- `value`: O valor é obrigatório.
+- `value`: O valor deve ser um número.
+- `value`: O valor deve ser maior ou igual a 0.01.
 
-## Contributing
+## Rota de Transação para Outro Usuário
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Esta rota permite que um usuário realize uma transação para outro usuário, especificando o valor e os IDs do Payer (quem envia) e do Payee (quem recebe).
 
-## Code of Conduct
+- `value` (float, obrigatório): Valor da transação.
+- `payer` (int, obrigatório): ID do usuário que está realizando o pagamento.
+- `payee` (int, obrigatório): ID do usuário que receberá o pagamento.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Exemplo de Requisição:**
+```json
+POST /api/transactions
+{
+    "value": 2000,
+    "payer": 1,
+    "payee": 2
+}
+```
+**Possíveis Erros:**
+- `value`: O valor é obrigatório.
+- `value`: O valor deve ser um número.
+- `value`: O valor deve ser maior ou igual a 0.01.
